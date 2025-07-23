@@ -159,11 +159,13 @@ save_profile() {
 }
 
 list_profiles() {
+    local name
+    local count
     log "Available profiles:"
     if ls "$CONFIG_DIR"/*.profile >/dev/null 2>&1; then
         for profile in "$CONFIG_DIR"/*.profile; do
-            local name=$(basename "$profile" .profile)
-            local count=$(grep -c "^[^#]" "$profile" 2>/dev/null || echo "0")
+            name=$(basename "$profile" .profile)
+            count=$(grep -c "^[^#]" "$profile" 2>/dev/null || echo "0")
             echo "  $name ($count proxies)"
         done
     else
@@ -290,7 +292,7 @@ while [[ $# -gt 0 ]]; do
                 err "Proxy file not found: $2"
                 exit 1
             fi
-            local line_num=0
+            line_num=0
             while IFS= read -r line; do
                 line_num=$((line_num + 1))
                 [[ "$line" =~ ^[[:space:]]*# ]] || [[ -z "${line// }" ]] && continue
@@ -418,7 +420,7 @@ fi
 # ========== Summary ==========
 log "Configuration Summary:"
 log "  Chain Type: $CHAIN_TYPE"
-[[ -n "$PROXY_DNS" ]] && log "  DNS over proxy: Enabled" || log "  DNS over proxy: Disabled"
+{ [[ -n "$PROXY_DNS" ]] && log "  DNS over proxy: Enabled" ; } || log "  DNS over proxy: Disabled"
 log "  Active proxies: ${#PROXIES[@]}"
 log "  Retry attempts: $RETRY"
 [[ $DELAY -gt 0 ]] && log "  Delay between proxies: ${DELAY}s"
